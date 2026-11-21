@@ -1,12 +1,12 @@
 # Student Retention Analysis
 
-Exploratory analysis, survival analysis and predictive modeling of student dropout, using a longitudinal panel of 20,000 students followed for up to 8 semesters (79,239 student-semester records).
+Exploratory analysis and predictive modeling of student dropout, using a longitudinal panel of 20,000 students followed for up to 8 semesters (79,239 student-semester records).
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mihaighise/student_retention_analysis/blob/main/Student_Retention.ipynb)
 
 ## Questions
 1. Which factors are associated with dropping out, and how strongly?
-2. When do students drop out, and which groups stay enrolled longer?
+2. When do students drop out, and which groups are at higher risk?
 3. How well can next-semester dropout be predicted, and which model works best?
 
 ## Dataset
@@ -18,17 +18,16 @@ Each row is one student in one semester: demographics, family income, scholarshi
 | Section | Contents |
 |---|---|
 | 2. Data structure | How each student's record ends (dropped out / graduated / censored) and why censored rows are excluded |
-| 3. Cleaning | Attendance clipping, gender normalisation, missing-value flags |
+| 3. Cleaning | Attendance clipping, gender normalisation, missing values (median for skewed income, mean for symmetric LMS logins, plus missing flags) |
 | 4. EDA | Dropout risk by semester, effect sizes, risk curves per feature, group comparisons, GPA × financial stress, trajectories before dropout |
-| 5. Survival analysis | Kaplan-Meier curves, log-rank tests, Cox model with time-varying covariates |
-| 6. Modeling | Grouped CV by student, 5 models + baseline, Optuna / grid-search tuning, threshold selection, held-out test evaluation, odds ratios and SHAP |
-| 7. Findings | Insights, model results, recommendations, limitations |
+| 5. Modeling | Grouped CV by student, 5 models + baseline, Optuna / grid-search tuning, threshold selection, held-out test evaluation, odds ratios and SHAP |
+| 6. Findings | Insights, model results, recommendations, limitations |
 
 ## Key findings
-- **Only 39 % of students complete 8 semesters** without dropping out (Kaplan-Meier). The raw count (34.6 % dropped out) understates attrition because 56 % of students are censored.
+- **Attrition is high**: 34.6 % of students are observed dropping out, and this understates the true rate because 56 % of students are censored before their outcome is known.
 - **Risk grows over time**: the per-semester dropout rate rises from 7.4 % (semester 1) to 14.7 % (semester 7).
 - **Grades and financial stress add up**: GPA ≤ 2.0 with high financial stress → ~55 % dropout risk; GPA > 3.0 with low stress → ~2 %.
-- **First-generation students have almost twice the hazard** of dropping out; **a scholarship lowers it by 46 %**, even after controlling for income, stress and grades.
+- **First-generation students are at higher risk** and **scholarship holders at lower risk** (7.3 % vs 11.2 % dropout rate), and both effects remain strong in the model after controlling for income, stress and grades.
 - **Dropout is gradual**: rising financial stress and a faster GPA decline are visible 2-3 semesters before a student leaves.
 - Gender, age and emergency expenses carry no meaningful signal.
 
@@ -43,16 +42,16 @@ All splits are grouped by `Student_ID`, so no student appears in both training a
 | Random Forest | 0.789 | 0.372 |
 | Baseline (always "stays") | 0.500 | 0.102 |
 
-**Final model (tuned logistic regression) on held-out students:** ROC AUC 0.811, PR AUC 0.421. The 10 % highest-risk students drop out at 4.3× the average rate and account for 43 % of all dropouts; the top 20 % account for 60 %.
+**Final model (tuned logistic regression) on held-out students:** ROC AUC 0.811, PR AUC 0.421. Its predicted probabilities are well calibrated.
 
-All models perform alike because every relationship in the data is smooth and additive, so logistic regression already captures the available signal. The notebook explains this in section 6.3.
+All models perform alike because every relationship in the data is smooth and additive, so logistic regression already captures the available signal. The notebook explains this in section 5.3.
 
 ## Running the notebook
 **Colab:** open the badge link above and uncomment the `%pip install` cell at the top.
 
 **Locally** (Python 3.10+):
 ```bash
-pip install pandas numpy scikit-learn xgboost lightgbm lifelines optuna shap matplotlib seaborn jupyter
+pip install pandas numpy scikit-learn xgboost lightgbm optuna shap matplotlib seaborn jupyter
 jupyter notebook Student_Retention.ipynb
 ```
 A full run takes about 5-10 minutes, most of it the Optuna hyperparameter search.
