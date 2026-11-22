@@ -14,6 +14,9 @@ Exploratory analysis and predictive modeling of student dropout, using a longitu
 
 Each row is one student in one semester: demographics, family income, scholarship, tuition, work hours, GPA, attendance, LMS logins, advising visits, failed courses and financial stress. The target `Target_Dropout_Next_Sem` is 1 when the student does not return for the next semester. Students whose record ends while still enrolled are **censored** (outcome unknown).
 
+## Report
+The full write-up is in [`Student_Retention_Report.pdf`](Student_Retention_Report.pdf).
+
 ## Notebook contents
 | Section | Contents |
 |---|---|
@@ -36,18 +39,18 @@ All splits are grouped by `Student_ID`, so no student appears in both training a
 
 | Model (5-fold grouped CV) | ROC AUC | PR AUC |
 |---|---|---|
-| Logistic Regression (tuned, L1) | 0.802 | 0.396 |
-| LightGBM (tuned, Optuna) | 0.801 | 0.394 |
-| XGBoost | 0.799 | 0.392 |
-| Random Forest | 0.789 | 0.372 |
-| Baseline (always "stays") | 0.500 | 0.102 |
+| Logistic Regression (tuned, L1) | 0.802 | 0.402 |
+| LightGBM (tuned, Optuna) | 0.801 | 0.401 |
+| XGBoost | 0.799 | 0.396 |
+| Random Forest | 0.790 | 0.378 |
+| Baseline (always "stays") | 0.500 | 0.101 |
 
-**Final model (tuned logistic regression) on held-out students:** ROC AUC 0.811, PR AUC 0.421. Its predicted probabilities are well calibrated.
+**Final model (tuned logistic regression) on held-out students:** ROC AUC 0.809, PR AUC 0.396 (random: 0.5 / 0.10). Its predicted probabilities are well calibrated.
 
 All models perform alike because every relationship in the data is smooth and additive, so logistic regression already captures the available signal. The notebook explains this in section 5.3.
 
 ## Running the notebook
-**Colab:** open the badge link above and uncomment the `%pip install` cell at the top.
+**Colab:** open the badge link above and run all cells; the first cell installs the packages Colab is missing.
 
 **Locally** (Python 3.10+):
 ```bash
