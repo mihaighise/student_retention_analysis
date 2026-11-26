@@ -22,7 +22,7 @@ The full write-up is in [`Student_Retention_Report.pdf`](Student_Retention_Repor
 |---|---|
 | 2. Data structure | How each student's record ends (dropped out / graduated / censored) and why censored rows are excluded |
 | 3. Cleaning | Attendance clipping, gender normalisation, missing values (median for skewed income, mean for symmetric LMS logins, plus missing flags) |
-| 4. EDA | Dropout risk by semester, effect sizes, risk curves per feature, group comparisons, GPA × financial stress, trajectories before dropout |
+| 4. EDA | Dropout risk by semester, correlations with dropout, risk curves per feature, group comparisons, GPA × financial stress, trajectories before dropout |
 | 5. Modeling | Grouped CV by student, 5 models + baseline, Optuna / grid-search tuning, threshold selection, held-out test evaluation, odds ratios and SHAP |
 | 6. Findings | Insights, model results, recommendations, limitations |
 
